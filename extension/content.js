@@ -81,6 +81,21 @@
     return count;
   }
 
+  function updateUIWithBackendScore(score, threat) {
+  console.log("🎯 Updating UI with backend score:", score);
+
+  // Example: if you already have banner logic
+  if (typeof showRiskBanner === "function") {
+    showRiskBanner(score);
+  }
+
+  // If you use storage
+  chrome.storage.local.set({
+    aiRiskScore: score,
+    aiEngine: "Backend Engine"
+  });
+  }
+
   function extractFeatureVector() {
     const text = extractPageText();
 
@@ -118,7 +133,16 @@
     },
     (response) => {
       if (response?.success) {
-        console.log("🔥 Backend Score:", JSON.stringify(response.data, null, 2));
+        const backendScore = response.data.score;
+        const threat = response.data.threat;
+
+        console.log("🔥 Backend Score:", backendScore, threat);
+
+        // 🔥 STORE globally (important)
+        window.backendRiskScore = backendScore;
+
+        // 🔥 CALL UI update (we’ll use this)
+        updateUIWithBackendScore(backendScore, threat);
       } else {
         console.error("❌ Backend error:", response?.error);
       }
@@ -129,7 +153,8 @@
   // =========================
   // RISK SCORING
   // =========================
-
+  // Don't use local score anymore
+  // backend will handle it
   function calculateTensorRiskScore() {
     try {
       const features = extractFeatureVector();
