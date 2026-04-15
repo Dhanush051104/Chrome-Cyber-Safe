@@ -28,6 +28,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.action === "ANALYZE_SITE") {
+  fetch("http://localhost:8080/api/analyze", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      features: message.features
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      sendResponse({ success: true, data: data });
+    })
+    .catch(err => {
+      sendResponse({ success: false, error: err.toString() });
+    });
+
+  return true;
+  }
+
 });
 
 // =============================================

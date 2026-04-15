@@ -110,6 +110,22 @@
     return featureVector;
   }
 
+  function sendToBackend(features) {
+  chrome.runtime.sendMessage(
+    {
+      action: "ANALYZE_SITE",
+      features: features
+    },
+    (response) => {
+      if (response?.success) {
+        console.log("🔥 Backend Score:", JSON.stringify(response.data, null, 2));
+      } else {
+        console.error("❌ Backend error:", response?.error);
+      }
+    }
+  );
+  }
+
   // =========================
   // RISK SCORING
   // =========================
@@ -117,6 +133,7 @@
   function calculateTensorRiskScore() {
     try {
       const features = extractFeatureVector();
+      sendToBackend(features);
       const weights = [0.55, 0.75, 0.45, 0.95, 0.70, 0.60, 1.10, 0.90, 0.55, 1.00];
       let score = 0;
 
