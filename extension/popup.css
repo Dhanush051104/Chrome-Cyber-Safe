@@ -1,0 +1,94 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 360px;
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #f8fafc;
+}
+
+.container {
+  padding: 16px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 16px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.card h2 {
+  margin: 0 0 10px;
+  font-size: 16px;
+}
+
+.small-text {
+  margin: 0 0 10px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.result-box,
+.guide-box {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.button-group.vertical {
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.secondary-btn {
+  flex: 1;
+  background: #2563eb;
+  color: #fff;
+}
+
+.issue-btn,
+.panic-btn {
+  background: #334155;
+  color: #fff;
+}
+
+.hidden {
+  display: none;
+}

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chrome Cyber Safe - Threat Blocked</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(239,68,68,0.12), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(249,115,22,0.10), transparent 30%),
+        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 760px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.22);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 25px 80px rgba(0,0,0,0.55);
+      position: relative;
+      overflow: hidden;
+    }
+    .top-bar {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, #ef4444, #f97316, #ef4444);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.2);
+      font-size: 30px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .sub {
+      margin: 6px 0 0;
+      color: #cbd5e1;
+      font-size: 14px;
+    }
+    .score {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(239,68,68,0.14);
+      border: 1px solid rgba(239,68,68,0.24);
+      color: #fca5a5;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .warn {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.16);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
+    }
+    .warn h2 {
+      margin: 0 0 10px;
+      color: #fecaca;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+    .panel {
+      background: rgba(2, 6, 23, 0.55);
+      border: 1px solid #334155;
+      border-radius: 20px;
+      padding: 18px;
+    }
+    .panel h3 {
+      margin: 0 0 12px;
+    }
+    .url-box {
+      background: rgba(15,23,42,0.8);
+      border: 1px solid rgba(239,68,68,0.14);
+      border-radius: 14px;
+      padding: 12px;
+      word-break: break-word;
+      font-size: 13px;
+      color: #e2e8f0;
+    }
+    ul {
+      margin: 0;
+      padding-left: 18px;
+      color: #cbd5e1;
+      line-height: 1.8;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 14px 18px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      flex: 1;
+      min-width: 180px;
+    }
+    .safe-btn {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+    }
+    .danger-btn {
+      background: linear-gradient(90deg, #dc2626, #ef4444);
+      color: #fff;
+    }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="top-bar"></div>
+
+    <div class="header">
+      <div class="brand">
+        <div class="icon">🛡️</div>
+        <div>
+          <h1>Chrome Cyber Safe Security Alert</h1>
+          <div class="sub">Risky action intercepted before navigation</div>
+        </div>
+      </div>
+      <div class="score" id="scoreBadge">Threat Score: 0 / 100</div>
+    </div>
+
+    <div class="warn">
+      <h2>⚠ Suspicious Phishing Attempt Blocked</h2>
+      <p>
+        Chrome Cyber Safe detected a high-risk destination and blocked the action before navigation.
+      </p>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Blocked Destination</h3>
+        <div class="url-box" id="blockedUrl">Unknown</div>
+      </div>
+
+      <div class="panel">
+        <h3>Why It Was Flagged</h3>
+        <ul id="reasonList"></ul>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="safe-btn" id="goBackBtn">Go Back Safely</button>
+      <button class="danger-btn" id="proceedBtn">Proceed Anyway</button>
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const blockedUrl = params.get("url") || "Unknown";
+    const score = params.get("score") || "0";
+    let reasons = [];
+
+    try {
+      reasons = JSON.parse(params.get("reasons") || "[]");
+    } catch {
+      reasons = [];
+    }
+
+    document.getElementById("blockedUrl").textContent = blockedUrl;
+    document.getElementById("scoreBadge").textContent = `Threat Score: ${score} / 100`;
+
+    const reasonList = document.getElementById("reasonList");
+    if (!reasons.length) {
+      reasons = ["Suspicious action detected"];
+    }
+
+    reasons.slice(0, 4).forEach((reason) => {
+      const li = document.createElement("li");
+      li.textContent = reason;
+      reasonList.appendChild(li);
+    });
+
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+      history.back();
+    });
+
+    document.getElementById("proceedBtn").addEventListener("click", () => {
+      window.location.href = blockedUrl;
+    });
+  </script>
+</body>
+</html>
