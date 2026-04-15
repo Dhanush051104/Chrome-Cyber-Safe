@@ -14,7 +14,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["libs/tf-lit.js", "content.js"],
+      "js": ["content.js"],
       "run_at": "document_idle"
     }
   ] 
