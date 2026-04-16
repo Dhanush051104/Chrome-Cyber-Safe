@@ -336,13 +336,16 @@
       }
 
       #ss-banner {
-        transition: transform 0.4s ease, opacity 0.4s ease;
+        transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
       }
 
       #ss-banner.ss-banner-hide {
         transform: translateY(-100%);
         opacity: 0;
-        pointer-events: none;
+        pointer-events: none !important;
       }
     `;
     document.head.appendChild(style);
@@ -416,53 +419,37 @@
 
     document.body.appendChild(banner);
 
-    // 🔥 Add hide animation style (ONLY ONCE)
-    if (!document.getElementById("ss-banner-style")) {
-      const style = document.createElement("style");
-      style.id = "ss-banner-style";
-      style.innerHTML = `
-        #ss-banner {
-          transition: transform 0.4s ease, opacity 0.4s ease;
-          transform: translateY(0);
-          opacity: 1;
-        }
-        .ss-banner-hide {
-        transform: translateY(-100%);
-        opacity: 0;
-        }
-      `;
-      document.head.appendChild(style);
-    }
+    // Banner transition is already defined in createStyles() — no duplicate style block needed
 
     // Auto-hide logic
     let hideTimer = null;
 
-    function schedulehide() {
+    function scheduleHide() {
       hideTimer = setTimeout(() => {
         banner.classList.add("ss-banner-hide");
       }, hideDelay);
     }
 
-    // Pause on hover
+    // Pause on hover — keep banner visible while user reads it
     banner.addEventListener("mouseenter", () => {
       if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
       banner.classList.remove("ss-banner-hide");
     });
 
-    // Resume on mouse leave
+    // Resume on mouse leave — restart countdown
     banner.addEventListener("mouseleave", () => {
-      schedulehide();
+      scheduleHide();
     });
 
     // Manual dismiss on ✕ click
     banner.querySelector("#ss-banner-close").addEventListener("click", (e) => {
       e.stopPropagation();
-      if (hideTimer) clearTimeout(hideTimer);
+      if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
       banner.classList.add("ss-banner-hide");
     });
 
-    // Start the timer
-    schedulehide();
+    // Start the auto-hide countdown
+    scheduleHide();
   }
 
   function showBlacklistToast(message) {
