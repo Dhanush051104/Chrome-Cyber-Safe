@@ -336,13 +336,13 @@
       }
 
       #ss-banner {
+        animation: ssBannerIn 0.4s ease forwards;
         transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.45s ease;
-        transform: translateY(0);
-        opacity: 1;
         pointer-events: auto;
       }
 
       #ss-banner.ss-banner-hide {
+        animation: none;
         transform: translateY(-100%);
         opacity: 0;
         pointer-events: none !important;
@@ -403,7 +403,6 @@
       justify-content: space-between;
       align-items: center;
       gap: 10px;
-      animation: ssBannerIn 0.4s ease forwards;
       cursor: pointer;
     `;
 
