@@ -14,7 +14,7 @@ public class RiskController {
 
     @GetMapping("/api/test")
     public String test() {
-        return "Backend connected successfully!";
+        return "Backend + DB config loaded";
     }
 
     @PostMapping("/api/analyze")
@@ -30,6 +30,51 @@ public class RiskController {
                     features.add(((Number) obj).intValue());
                 }
             }
+        }
+
+        // 🔥 Extract URL + domain
+        String url = (String) request.get("url");
+        String domain = "";
+
+        if (url != null) {
+            domain = url.replace("https://", "")
+                        .replace("http://", "")
+                        .split("/")[0];
+
+            if (domain.startsWith("mail.")) {
+                domain = domain.substring(5);
+            }
+        }
+
+
+        // 🔥 Check trusted domains from DB
+        try {
+            java.sql.Connection conn = java.sql.DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/cybersafe", "root", "root123"
+            );
+
+            java.sql.PreparedStatement stmt = conn.prepareStatement(
+            "SELECT * FROM trusted_domains WHERE domain = ?"
+            );
+
+            stmt.setString(1, domain.replace("mail.", ""));
+            java.sql.ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Map<String, Object> response = new HashMap<>();
+                response.put("score", 5);
+                response.put("threat", "Safe");
+
+                System.out.println("✅ Trusted domain from DB: " + domain);
+
+                conn.close();
+                return response;
+            }
+
+            conn.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
        // 🔥 Weighted scoring system (Phase 1 improvement)
