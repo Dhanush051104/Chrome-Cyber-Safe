@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.util.*;
 
 @RestController
@@ -16,6 +18,47 @@ public class RiskController {
     public String test() {
         return "Backend + DB config loaded";
     }
+
+    @PostMapping("/api/blacklist")
+public Map<String, Object> addToBlacklist(@RequestBody Map<String, String> request) {
+
+    String domain = request.get("domain");
+
+    Map<String, Object> response = new HashMap<>();
+
+    if (domain == null || domain.isEmpty()) {
+        response.put("status", "error");
+        response.put("message", "Domain is empty");
+        return response;
+    }
+
+    try {
+        Connection conn = DriverManager.getConnection(
+            "jdbc:mysql://localhost:3306/cybersafe", "root", "root123"
+        );
+
+        PreparedStatement stmt = conn.prepareStatement(
+            "INSERT IGNORE INTO blacklist_domains (domain) VALUES (?)"
+        );
+
+        stmt.setString(1, domain);
+        stmt.executeUpdate();
+
+        conn.close();
+
+        response.put("status", "success");
+        response.put("message", "Domain added to blacklist");
+
+        System.out.println("🚫 Added to global blacklist: " + domain);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        response.put("status", "error");
+        response.put("message", "DB error");
+    }
+
+    return response;
+}
 
     @PostMapping("/api/analyze")
     public Map<String, Object> analyze(@RequestBody Map<String, Object> request) {
