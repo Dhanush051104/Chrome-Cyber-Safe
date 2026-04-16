@@ -32,15 +32,34 @@ public class RiskController {
             }
         }
 
-        // Backend is the ONLY scoring authority
-        int sum = 0;
-        for (int f : features) {
-            sum += f;
+       // 🔥 Weighted scoring system (Phase 1 improvement)
+
+        // Define weights for each feature index
+        // (Adjust based on your extractFeatureVector order)
+        int[] weights = {20, 15, 25, 10, 30, 15, 10, 20, 25, 15};
+
+        int score = 0;
+
+        // Apply weights
+        for (int i = 0; i < features.size() && i < weights.length; i++) {
+            score += features.get(i) * weights[i];
         }
 
-        // Score formula: base 40 + weighted sum, capped at 100
-        int score = Math.min(100, 40 + sum * 5);
+        //  🔥 Combination bonuses (context-based logic)
+        if (features.size() >= 3) {
+            // Example: login + suspicious keyword + no HTTPS
+            if (features.get(0) == 1 && features.get(2) == 1) {
+                score += 20;
+            }
 
+            // Example: banking + urgency
+            if (features.get(1) == 1 && features.get(3) == 1) {
+                score += 25;
+            }
+        }
+
+        // Normalize score
+        score = Math.min(100, Math.max(0, score));
         String threat;
         if (score >= 75) {
             threat = "High Risk";

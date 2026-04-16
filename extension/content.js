@@ -464,4 +464,18 @@
     init();
   }
 
+  // 🔥 Detect URL changes (for SPA like Gmail)
+  let lastUrl = location.href;
+
+  setInterval(() => {
+    if (location.href !== lastUrl) {
+      lastUrl = location.href;
+
+      console.log("🔄 Page changed, re-analyzing...");
+
+      const features = extractFeatureVector();
+      sendToBackend(features);
+    }
+  }, 2000);
+
 })();
