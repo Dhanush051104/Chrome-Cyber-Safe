@@ -416,6 +416,24 @@
 
     document.body.appendChild(banner);
 
+    // 🔥 Add hide animation style (ONLY ONCE)
+    if (!document.getElementById("ss-banner-style")) {
+      const style = document.createElement("style");
+      style.id = "ss-banner-style";
+      style.innerHTML = `
+        #ss-banner {
+          transition: transform 0.4s ease, opacity 0.4s ease;
+          transform: translateY(0);
+          opacity: 1;
+        }
+        .ss-banner-hide {
+        transform: translateY(-100%);
+        opacity: 0;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
     // Auto-hide logic
     let hideTimer = null;
 
